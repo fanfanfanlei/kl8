@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .container {
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: #2c3e50;
+            position: relative;
+            overflow: hidden;
+            margin: 50px auto;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+        }
+
+        .ball {
+            width: 30px;
+            height: 30px;
+            background: #e74c3c;
+            border-radius: 50%;
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            transition: all 0.3s;
+            transform-origin: center;
+        }
+
+        .hole {
+            width: 50px;
+            height: 50px;
+            background: #34495e;
+            border-radius: 50%;
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.7);
+        }
+
+        .blower {
+            width: 120px;
+            height: 80px;
+            background: #7f8c8d;
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 50% 50% 0 0;
+            animation: blow 1s infinite alternate;
+        }
+
+        @keyframes blow {
+            0% { box-shadow: 0 0 50px 10px rgba(52,152,219,0.5); }
+            100% { box-shadow: 0 0 80px 20px rgba(52,152,219,0.8); }
+        }
+
+        .controls {
+            text-align: center;
+            margin: 20px;
+        }
+
+        button {
+            padding: 12px 40px;
+            font-size: 18px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #219a52;
+            transform: scale(1.05);
+        }
+
+        #result {
+            text-align: center;
+            font-size: 24px;
+            margin: 20px;
+            color: #2c3e50;
+            min-height: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="blower"></div>
+        <div class="hole"></div>
+    </div>
+    <div class="controls">
+        <button onclick="startLottery()">开始</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        class VortexSystem {
+            constructor() {
+                this.balls = [];
+                this.selectedNumbers = [];
+                this.isRunning = false;
+                this.container = document.querySelector('.container');
+                this.hole = document.querySelector('.hole');
+                this.containerRadius = this.container.offsetWidth / 2;
+                this.init();
+            }
+
+            init() {
+                // 创建80个球
+                for(let i = 1; i <= 80; i++) {
+                    const ball = this.createBall(i);
+                    this.balls.push(ball);
+                    this.container.appendChild(ball.element);
+                }
+            }
+
+            createBall(number) {
+                const element = document.createElement('div');
+                element.className = 'ball';
+                element.textContent = number;
+                element.style.background = this.getBallColor(number);
+
+                // 初始位置在底部中心区域
+                const pos = this.getInitialPosition();
+                return {
+                    element: element,
+                    x: pos.x,
+                    y: pos.y,
+                    vx: 0,
+                    vy: -Math.random() * 2, // 初始向上喷发速度
+                    active: true
+                };
+            }
+
+            getBallColor(num) {
+                const colors = ['#e74c3c', '#3498db', '#f1c40f', '#2ecc71'];
+                return colors[num % 4];
+            }
+
+            getInitialPosition() {
+                // 初始位置在底部中心区域
+                return {
+                    x: this.containerRadius - 15,
+                    y: this.containerRadius * 1.8 - 15
+                };
+            }
+
+            start() {
+                if(this.isRunning) return;
+                this.isRunning = true;
+                this.selectedNumbers = [];
+                document.getElementById('result').textContent = '';
+                this.animate();
+            }
+
+            applyVortexForces() {
+                const VORTEX_STRENGTH = 0.1; // 旋涡强度
+                const BLOW_STRENGTH = 0.2;    // 底部吹风强度
+                const TURBULENCE = 3;       // 湍流强度
+
+                this.balls.forEach(ball => {
+                    if(!ball.active) return;
+
+                    // 旋涡力计算
+                    const dx = ball.x - this.containerRadius;
+                    const dy = ball.y - this.containerRadius;
+                    const distance = Math.sqrt(dx*dx + dy*dy);
+
+                    // 底部持续强风
+                    if(ball.y > this.containerRadius) {
+                        ball.vy -= BLOW_STRENGTH * (ball.y - this.containerRadius)/this.containerRadius;
+                    }
+
+                    // 向心力（旋涡效果）
+                    ball.vx += (-dx * VORTEX_STRENGTH) / distance;
+                    ball.vy += (-dy * VORTEX_STRENGTH) / distance;
+
+                    // 随机湍流
+                    ball.vx += (Math.random() - 0.5) * TURBULENCE;
+                    ball.vy += (Math.random() - 0.5) * TURBULENCE;
+
+                    // 空气阻力（保持运动活力）
+                    ball.vx *= 0.995;
+                    ball.vy *= 0.995;
+                });
+            }
+
+            checkContainerEdge(ball) {
+                // 圆形边界碰撞检测
+                const dx = ball.x - this.containerRadius;
+                const dy = ball.y - this.containerRadius;
+                const distance = Math.sqrt(dx*dx + dy*dy);
+                const maxDistance = this.containerRadius - 15;
+
+                if(distance > maxDistance) {
+                    const ratio = maxDistance / distance;
+                    ball.x = this.containerRadius + dx * ratio;
+                    ball.y = this.containerRadius + dy * ratio;
+
+                    // 反弹效果
+                    const dot = (ball.vx*dx + ball.vy*dy)/(distance*distance);
+                    ball.vx -= 1.8 * dot * dx;
+                    ball.vy -= 1.8 * dot * dy;
+
+                    // 朝向中心位置
+                    ball.vx = -ball.vx * 0.5;
+                    ball.vy = -ball.vy * 0.5;
+                }
+            }
+
+            checkHoleCollision(ball) {
+                const holeCenter = {
+                    x: this.containerRadius,
+                    y: 30 + 25 // 洞口半径25
+                };
+
+                const dx = ball.x + 15 - holeCenter.x;
+                const dy = ball.y + 15 - holeCenter.y;
+                return Math.sqrt(dx*dx + dy*dy) < 35; // 洞口半径+球半径
+            }
+
+            selectBall(ball) {
+                ball.active = false;
+                this.selectedNumbers.push(ball.element.textContent);
+
+                // 移除球元素
+                ball.element.style.transform = 'scale(0)';
+                setTimeout(() => ball.element.remove(), 500);
+
+                document.getElementById('result').textContent =
+                    this.selectedNumbers.join(', ');
+
+                if(this.selectedNumbers.length >= 10) {
+                    this.isRunning = false;
+                }
+            }
+
+            updatePositions() {
+                this.balls = this.balls.filter(ball => {
+                    if(!ball.active) return false;
+
+                    ball.x += ball.vx;
+                    ball.y += ball.vy;
+
+                    // 更新位置
+                    ball.element.style.left = ball.x + 'px';
+                    ball.element.style.top = ball.y + 'px';
+
+                    // 动态旋转效果
+                    ball.element.style.transform = `rotate(${ball.vx * 5}deg)`;
+
+                    // 检测是否靠近中心位置，重新向上喷发
+                    const dx = ball.x - this.containerRadius;
+                    const dy = ball.y - this.containerRadius;
+                    const distance = Math.sqrt(dx*dx + dy*dy);
+                    if(distance < 50 && ball.y > this.containerRadius) {
+                        ball.vx = 0;
+                        ball.vy = -Math.random() * 2; // 重新赋予向上喷发速度
+                    }
+
+                    return true;
+                });
+            }
+
+            animate() {
+                if(!this.isRunning) return;
+
+                this.applyVortexForces();
+
+                this.balls.forEach(ball => {
+                    if(!ball.active) return;
+                    this.checkContainerEdge(ball);
+                    if(this.checkHoleCollision(ball)) {
+                        this.selectBall(ball);
+                    }
+                });
+
+                this.updatePositions();
+                requestAnimationFrame(() => this.animate());
+            }
+        }
+
+        const vortexSystem = new VortexSystem();
+
+        function startLottery() {
+            // 重置系统
+            vortexSystem.container.innerHTML = '<div class="blower"></div><div class="hole"></div>';
+            vortexSystem.balls = [];
+            vortexSystem.init();
+            vortexSystem.start();
+        }
+    </script>
+</body>
+</html>
