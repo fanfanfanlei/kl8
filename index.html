@@ -1,33 +1,451 @@
 <!DOCTYPE html>
-<meta charset="UTF-8"></meta>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+    <title>数字关联分组 · 移动端适配</title>
     <style>
+        * {
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
         body {
+            background: #f5f7fb;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 16px 12px;
+        }
+        .card {
+            max-width: 720px;
             width: 100%;
-            margin: 0 auto;
+            background: white;
+            border-radius: 32px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.06), 0 8px 18px rgba(0,0,0,0.05);
+            padding: 1.8rem 1.5rem 2.2rem;
+            transition: padding 0.2s;
+        }
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 650;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.2rem;
+            color: #162b3a;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            flex-wrap: wrap;
+        }
+        .sub {
+            color: #2d4059;
+            font-size: 0.95rem;
+            margin-bottom: 1.8rem;
+            border-left: 5px solid #b83b5e;
+            padding: 0.6rem 1rem 0.6rem 1.2rem;
+            background: #f8fafd;
+            border-radius: 0 18px 18px 0;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+        .sub strong {
+            color: #b83b5e;
+            font-weight: 650;
+        }
+        .input-area {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        #numberInput {
+            flex: 1 1 200px;
+            min-width: 200px;
+            padding: 0 20px;
+            height: 56px;
+            border: 2px solid #dde3ed;
+            border-radius: 60px;
+            font-size: 1.1rem;
+            background: white;
+            transition: 0.2s;
+            outline: none;
+            color: #0f2b3c;
+            -webkit-appearance: none;
+        }
+        #numberInput:focus {
+            border-color: #b83b5e;
+            box-shadow: 0 0 0 4px rgba(184,59,94,0.2);
+        }
+        #submitBtn {
+            background: #b83b5e;
+            color: white;
+            border: none;
+            height: 56px;
+            padding: 0 30px;
+            border-radius: 60px;
+            font-size: 1.15rem;
+            font-weight: 580;
+            cursor: pointer;
+            transition: 0.15s;
+            box-shadow: 0 8px 18px rgba(184,59,94,0.3);
+            white-space: nowrap;
+            flex: 0 0 auto;
+            border: 1px solid rgba(255,255,255,0.1);
+            -webkit-tap-highlight-color: transparent;
+        }
+        #submitBtn:active {
+            transform: scale(0.97);
+            background: #9f2d4f;
+        }
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .result-header h3 {
+            font-weight: 650;
+            font-size: 1.3rem;
+            color: #0f293f;
+        }
+        .hint-badge {
+            background: #e8edf5;
+            padding: 0.3rem 1.2rem;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            color: #2e405b;
+            font-weight: 500;
+        }
+        .result-list {
+            background: #ffffff;
+            border-radius: 28px;
+            border: 1px solid #e9f0f6;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+        }
+        .row {
+            display: flex;
+            align-items: center;
+            padding: 0.9rem 1rem;
+            border-bottom: 2px solid #dee9f2;  /* 明显下划线 */
+            transition: background 0.1s;
+            gap: 12px;
+        }
+        .row:last-child {
+            border-bottom: none;
+        }
+        .index-circle {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border: 2.5px solid #b83b5e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #b83b5e;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(184,59,94,0.15);
+            line-height: 1;
+        }
+        .numbers-row {
+            flex: 1;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.2rem 0.5rem;
+            font-size: 1.15rem;
+            line-height: 1.5;
+        }
+        .input-number {
+            font-weight: 600;
+            color: #173042;
+            background: #eef3f9;
+            padding: 0.2rem 0.8rem;
+            border-radius: 40px;
+            display: inline-block;
+            white-space: nowrap;
+        }
+        .supplement {
+            font-weight: 600;
+            color: #b83b5e;
+            background: rgba(184,59,94,0.1);
+            padding: 0.2rem 0.6rem;
+            border-radius: 40px;
+            display: inline-block;
+            white-space: nowrap;
+        }
+        .sep {
+            color: #97abc2;
+            font-weight: 400;
+            margin: 0 0.1rem;
+            font-size: 1rem;
+        }
+        .empty-message {
+            text-align: center;
+            padding: 3rem 1.5rem;
+            color: #5e738e;
+            background: #f9fcff;
+            border-radius: 40px;
+            border: 1.5px dashed #cbd6e4;
+            font-size: 1.05rem;
+        }
+        .example-note {
+            color: #2a4d6c;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            background: #eef3f9;
+            padding: 0.8rem 1.2rem;
+            border-radius: 50px;
+            display: inline-block;
+            width: auto;
+        }
+        .example-note code {
+            background: #d3deed;
+            padding: 0.3rem 0.9rem;
+            border-radius: 40px;
+            color: #132a3b;
+            font-weight: 500;
+        }
+        footer {
+            margin-top: 1.5rem;
+            font-size: 0.85rem;
+            color: #7085a2;
             text-align: center;
         }
-        .title {
-            font-size:18px;
-            font-weight:bold;
-            margin-top: 30px;
+
+        /* 移动端优化 */
+        @media (max-width: 500px) {
+            .card {
+                padding: 1.3rem 1rem 1.8rem;
+                border-radius: 28px;
+            }
+            h1 {
+                font-size: 1.6rem;
+            }
+            .sub {
+                font-size: 0.9rem;
+                padding: 0.5rem 0.8rem 0.5rem 1rem;
+            }
+            .input-area {
+                flex-direction: column;
+                gap: 10px;
+            }
+            #numberInput {
+                width: 100%;
+                height: 52px;
+                font-size: 1rem;
+                padding: 0 16px;
+            }
+            #submitBtn {
+                width: 100%;
+                height: 52px;
+                font-size: 1.1rem;
+                padding: 0;
+            }
+            .index-circle {
+                width: 36px;
+                height: 36px;
+                font-size: 1rem;
+                border-width: 2px;
+            }
+            .numbers-row {
+                font-size: 1.05rem;
+                gap: 0.2rem 0.3rem;
+            }
+            .input-number, .supplement {
+                padding: 0.15rem 0.6rem;
+            }
+            .result-header h3 {
+                font-size: 1.2rem;
+            }
+            .hint-badge {
+                font-size: 0.75rem;
+                padding: 0.2rem 1rem;
+            }
         }
-        .container {
-            text-align: left;
-            padding: 0 20px;
+
+        @media (max-width: 360px) {
+            .row {
+                padding: 0.8rem 0.7rem;
+                gap: 8px;
+            }
+            .index-circle {
+                width: 32px;
+                height: 32px;
+                font-size: 0.9rem;
+                margin-right: 2px;
+            }
+            .numbers-row {
+                font-size: 0.95rem;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="title">《养生奥觉》</div>
-    <div class="container">
-        <p>枸杞：50g</p>
-        <p>红枣：35g</p>
-        <div style="font-size:10px;position: absolute; bottom: 0;">
-            <div>每晚19点后更新配方，不见效，第二天19点后可继续查看新方案，直到见效为止，见效后地址会变更，需重新购买才能查看新的学习资料</div>
+    <div class="card">
+        <h1>🔗 十二关联 · 全分隔符</h1>
+        <div class="sub">
+            <strong>规则：</strong> 每个数字可 ±12 寻找同伴（范围1～49）。<br>
+            自动识别逗号、顿号、短横线、空格等分隔符。红色【】为自动补全。
         </div>
+
+        <div class="input-area">
+            <input type="text" id="numberInput" placeholder="例: 23-6,2、31 10 9 41 1 20" value="23-6,2、31 10 9 41 1 20">
+            <button id="submitBtn">确认</button>
+        </div>
+
+        <div class="result-header">
+            <h3>📋 分组结果</h3>
+            <span class="hint-badge">序号圆圈 · 行下划线</span>
+        </div>
+        <div id="resultContainer" class="result-list">
+            <!-- 动态生成行 -->
+        </div>
+        <div class="example-note">
+            ⚡ 示例中 <code>23-6,2、31 10 9 41 1 20</code> 将自动解析并补全（第5组含1和49）。
+        </div>
+        <footer>加减12链条 · 移动端友好</footer>
     </div>
+
+    <script>
+        (function() {
+            const inputField = document.getElementById('numberInput');
+            const submitBtn = document.getElementById('submitBtn');
+            const resultDiv = document.getElementById('resultContainer');
+
+            // 核心处理函数：输入字符串，返回按首次出现顺序的分组及原始输入集合
+            function buildGroups(inputStr) {
+                // 提取所有数字（1~49），忽略非数字字符 —— 兼容任意分隔符
+                const rawMatches = inputStr.match(/\d+/g);
+                if (!rawMatches) return { groups: [], inputSet: new Set() };
+
+                // 转换为整数，过滤1~49，保留首次出现顺序（去重）
+                const uniqueOrdered = [];
+                const seen = new Set();
+                for (let match of rawMatches) {
+                    const num = parseInt(match, 10);
+                    if (isNaN(num) || num < 1 || num > 49) continue;   // 超出范围忽略
+                    if (!seen.has(num)) {
+                        seen.add(num);
+                        uniqueOrdered.push(num);
+                    }
+                }
+
+                const inputSet = new Set(uniqueOrdered);
+
+                // 根据首次出现顺序确定组的base顺序（1~12）
+                const groupBases = [];
+                const baseSet = new Set();
+
+                for (let num of uniqueOrdered) {
+                    const base = ((num - 1) % 12) + 1;   // 1~12
+                    if (!baseSet.has(base)) {
+                        baseSet.add(base);
+                        groupBases.push(base);
+                    }
+                }
+
+                // 构造每个组的完整数字序列 (升序)
+                const groups = [];
+                for (let base of groupBases) {
+                    const members = [];
+                    let current = base;
+                    while (current <= 49) {
+                        members.push(current);
+                        current += 12;
+                    }
+                    groups.push({
+                        base: base,
+                        numbers: members   // 升序，自然包含1~49最长链
+                    });
+                }
+
+                return { groups, inputSet };
+            }
+
+            // 渲染结果到页面
+            function render() {
+                const rawInput = inputField.value.trim();
+                const { groups, inputSet } = buildGroups(rawInput);
+
+                resultDiv.innerHTML = '';
+
+                if (groups.length === 0) {
+                    const emptyDiv = document.createElement('div');
+                    emptyDiv.className = 'empty-message';
+                    emptyDiv.innerText = '✨ 输入1~49之间的数字（用任意符号分隔）';
+                    resultDiv.appendChild(emptyDiv);
+                    return;
+                }
+
+                // 遍历组，生成每一行
+                groups.forEach((group, idx) => {
+                    const row = document.createElement('div');
+                    row.className = 'row';
+
+                    // 序号圆圈
+                    const circle = document.createElement('span');
+                    circle.className = 'index-circle';
+                    circle.textContent = idx + 1;
+                    row.appendChild(circle);
+
+                    // 数字区域
+                    const numbersSpan = document.createElement('span');
+                    numbersSpan.className = 'numbers-row';
+
+                    // 为该组生成带样式的数字
+                    const numberSpans = [];
+                    group.numbers.forEach((num) => {
+                        if (inputSet.has(num)) {
+                            // 原始输入数字
+                            const span = document.createElement('span');
+                            span.className = 'input-number';
+                            span.textContent = num;
+                            numberSpans.push(span);
+                        } else {
+                            // 自动补全数字，红色【】
+                            const span = document.createElement('span');
+                            span.className = 'supplement';
+                            span.textContent = `【${num}】`;
+                            numberSpans.push(span);
+                        }
+                    });
+
+                    // 用顿号连接
+                    for (let i = 0; i < numberSpans.length; i++) {
+                        numbersSpan.appendChild(numberSpans[i]);
+                        if (i < numberSpans.length - 1) {
+                            const sep = document.createTextNode('、');
+                            numbersSpan.appendChild(sep);
+                        }
+                    }
+
+                    row.appendChild(numbersSpan);
+                    resultDiv.appendChild(row);
+                });
+            }
+
+            // 绑定事件
+            submitBtn.addEventListener('click', render);
+            inputField.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    render();
+                }
+            });
+
+            // 初始渲染（使用示例值）
+            window.addEventListener('load', () => {
+                render();
+            });
+        })();
+    </script>
 </body>
 </html>
