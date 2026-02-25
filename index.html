@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>数字关联分组 · 移动端适配</title>
+    <title>数字关联分组 · 移动端滚动适配</title>
     <style>
         * {
             box-sizing: border-box;
@@ -99,6 +99,25 @@
             transform: scale(0.97);
             background: #9f2d4f;
         }
+        #clearBtn {
+            background: #eef2f6;
+            color: #2d4059;
+            border: 2px solid #d4dee9;
+            height: 56px;
+            padding: 0 24px;
+            border-radius: 60px;
+            font-size: 1.15rem;
+            font-weight: 580;
+            cursor: pointer;
+            transition: 0.15s;
+            white-space: nowrap;
+            flex: 0 0 auto;
+            -webkit-tap-highlight-color: transparent;
+        }
+        #clearBtn:active {
+            background: #dbe1ea;
+            transform: scale(0.97);
+        }
         .result-header {
             display: flex;
             justify-content: space-between;
@@ -131,7 +150,7 @@
             display: flex;
             align-items: center;
             padding: 0.9rem 1rem;
-            border-bottom: 2px solid #dee9f2;  /* 明显下划线 */
+            border-bottom: 2px solid #dee9f2;
             transition: background 0.1s;
             gap: 12px;
         }
@@ -157,11 +176,12 @@
         .numbers-row {
             flex: 1;
             display: flex;
-            flex-wrap: wrap;
             align-items: center;
             gap: 0.2rem 0.5rem;
             font-size: 1.15rem;
             line-height: 1.5;
+            /* 默认允许换行，移动端下覆盖为不换行+滚动 */
+            flex-wrap: wrap;
         }
         .input-number {
             font-weight: 600;
@@ -186,6 +206,7 @@
             font-weight: 400;
             margin: 0 0.1rem;
             font-size: 1rem;
+            white-space: nowrap;
         }
         .empty-message {
             text-align: center;
@@ -220,7 +241,21 @@
             text-align: center;
         }
 
-        /* 移动端优化 */
+        /* 移动端优化：窄屏下强制单行 + 横向滚动 */
+        @media (max-width: 600px) {
+            .input-area {
+                gap: 10px;
+            }
+            #numberInput {
+                flex: 1 1 100%;
+            }
+            #submitBtn, #clearBtn {
+                flex: 1 1 calc(50% - 5px);
+                padding: 0 10px;
+                text-align: center;
+            }
+        }
+
         @media (max-width: 500px) {
             .card {
                 padding: 1.3rem 1rem 1.8rem;
@@ -233,21 +268,14 @@
                 font-size: 0.9rem;
                 padding: 0.5rem 0.8rem 0.5rem 1rem;
             }
-            .input-area {
-                flex-direction: column;
-                gap: 10px;
-            }
             #numberInput {
-                width: 100%;
                 height: 52px;
                 font-size: 1rem;
                 padding: 0 16px;
             }
-            #submitBtn {
-                width: 100%;
+            #submitBtn, #clearBtn {
                 height: 52px;
-                font-size: 1.1rem;
-                padding: 0;
+                font-size: 1.05rem;
             }
             .index-circle {
                 width: 36px;
@@ -256,11 +284,20 @@
                 border-width: 2px;
             }
             .numbers-row {
-                font-size: 1.05rem;
-                gap: 0.2rem 0.3rem;
+                font-size: 1rem;           /* 稍微减小 */
+                flex-wrap: nowrap;          /* 强制不换行 */
+                overflow-x: auto;            /* 允许横向滚动 */
+                -webkit-overflow-scrolling: touch;
+                padding-bottom: 4px;         /* 留点空间给滚动条 */
+                gap: 0.2rem;
             }
             .input-number, .supplement {
-                padding: 0.15rem 0.6rem;
+                padding: 0.15rem 0.5rem;    /* 减小内边距 */
+                white-space: nowrap;
+                flex-shrink: 0;              /* 防止被压缩 */
+            }
+            .sep {
+                flex-shrink: 0;
             }
             .result-header h3 {
                 font-size: 1.2rem;
@@ -271,26 +308,25 @@
             }
         }
 
-        @media (max-width: 360px) {
-            .row {
-                padding: 0.8rem 0.7rem;
-                gap: 8px;
-            }
+        @media (max-width: 380px) {
             .index-circle {
                 width: 32px;
                 height: 32px;
                 font-size: 0.9rem;
-                margin-right: 2px;
+                margin-right: 4px;
             }
             .numbers-row {
-                font-size: 0.95rem;
+                font-size: 0.9rem;           /* 进一步缩小 */
+            }
+            .input-number, .supplement {
+                padding: 0.1rem 0.4rem;
             }
         }
     </style>
 </head>
 <body>
     <div class="card">
-        <h1>🔗 十二关联 · 全分隔符</h1>
+        <h1>🔗 十二关联 · 一键清空</h1>
         <div class="sub">
             <strong>规则：</strong> 每个数字可 ±12 寻找同伴（范围1～49）。<br>
             自动识别逗号、顿号、短横线、空格等分隔符。红色【】为自动补全。
@@ -299,11 +335,12 @@
         <div class="input-area">
             <input type="text" id="numberInput" placeholder="例: 23-6,2、31 10 9 41 1 20" value="23-6,2、31 10 9 41 1 20">
             <button id="submitBtn">确认</button>
+            <button id="clearBtn">一键清空</button>
         </div>
 
         <div class="result-header">
             <h3>📋 分组结果</h3>
-            <span class="hint-badge">序号圆圈 · 行下划线</span>
+            <span class="hint-badge">序号圆圈 · 横向滚动</span>
         </div>
         <div id="resultContainer" class="result-list">
             <!-- 动态生成行 -->
@@ -311,27 +348,25 @@
         <div class="example-note">
             ⚡ 示例中 <code>23-6,2、31 10 9 41 1 20</code> 将自动解析并补全（第5组含1和49）。
         </div>
-        <footer>加减12链条 · 移动端友好</footer>
+        <footer>加减12链条 · 移动端可横向滑动</footer>
     </div>
 
     <script>
         (function() {
             const inputField = document.getElementById('numberInput');
             const submitBtn = document.getElementById('submitBtn');
+            const clearBtn = document.getElementById('clearBtn');
             const resultDiv = document.getElementById('resultContainer');
 
-            // 核心处理函数：输入字符串，返回按首次出现顺序的分组及原始输入集合
             function buildGroups(inputStr) {
-                // 提取所有数字（1~49），忽略非数字字符 —— 兼容任意分隔符
                 const rawMatches = inputStr.match(/\d+/g);
                 if (!rawMatches) return { groups: [], inputSet: new Set() };
 
-                // 转换为整数，过滤1~49，保留首次出现顺序（去重）
                 const uniqueOrdered = [];
                 const seen = new Set();
                 for (let match of rawMatches) {
                     const num = parseInt(match, 10);
-                    if (isNaN(num) || num < 1 || num > 49) continue;   // 超出范围忽略
+                    if (isNaN(num) || num < 1 || num > 49) continue;
                     if (!seen.has(num)) {
                         seen.add(num);
                         uniqueOrdered.push(num);
@@ -340,19 +375,17 @@
 
                 const inputSet = new Set(uniqueOrdered);
 
-                // 根据首次出现顺序确定组的base顺序（1~12）
                 const groupBases = [];
                 const baseSet = new Set();
 
                 for (let num of uniqueOrdered) {
-                    const base = ((num - 1) % 12) + 1;   // 1~12
+                    const base = ((num - 1) % 12) + 1;
                     if (!baseSet.has(base)) {
                         baseSet.add(base);
                         groupBases.push(base);
                     }
                 }
 
-                // 构造每个组的完整数字序列 (升序)
                 const groups = [];
                 for (let base of groupBases) {
                     const members = [];
@@ -363,14 +396,13 @@
                     }
                     groups.push({
                         base: base,
-                        numbers: members   // 升序，自然包含1~49最长链
+                        numbers: members
                     });
                 }
 
                 return { groups, inputSet };
             }
 
-            // 渲染结果到页面
             function render() {
                 const rawInput = inputField.value.trim();
                 const { groups, inputSet } = buildGroups(rawInput);
@@ -385,32 +417,26 @@
                     return;
                 }
 
-                // 遍历组，生成每一行
                 groups.forEach((group, idx) => {
                     const row = document.createElement('div');
                     row.className = 'row';
 
-                    // 序号圆圈
                     const circle = document.createElement('span');
                     circle.className = 'index-circle';
                     circle.textContent = idx + 1;
                     row.appendChild(circle);
 
-                    // 数字区域
                     const numbersSpan = document.createElement('span');
                     numbersSpan.className = 'numbers-row';
 
-                    // 为该组生成带样式的数字
                     const numberSpans = [];
                     group.numbers.forEach((num) => {
                         if (inputSet.has(num)) {
-                            // 原始输入数字
                             const span = document.createElement('span');
                             span.className = 'input-number';
                             span.textContent = num;
                             numberSpans.push(span);
                         } else {
-                            // 自动补全数字，红色【】
                             const span = document.createElement('span');
                             span.className = 'supplement';
                             span.textContent = `【${num}】`;
@@ -418,7 +444,6 @@
                         }
                     });
 
-                    // 用顿号连接
                     for (let i = 0; i < numberSpans.length; i++) {
                         numbersSpan.appendChild(numberSpans[i]);
                         if (i < numberSpans.length - 1) {
@@ -432,8 +457,13 @@
                 });
             }
 
-            // 绑定事件
+            function clearInputAndResult() {
+                inputField.value = '';
+                render();
+            }
+
             submitBtn.addEventListener('click', render);
+            clearBtn.addEventListener('click', clearInputAndResult);
             inputField.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault();
@@ -441,7 +471,6 @@
                 }
             });
 
-            // 初始渲染（使用示例值）
             window.addEventListener('load', () => {
                 render();
             });
