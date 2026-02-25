@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>数字关联分组 · 纯净移动版</title>
+    <title>数字关联分组 · 生肖圆圈</title>
     <style>
         * {
             box-sizing: border-box;
@@ -158,8 +158,8 @@
             border-bottom: none;
         }
         .index-circle {
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             background: white;
             border: 2.5px solid #b83b5e;
             border-radius: 50%;
@@ -167,7 +167,7 @@
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: #b83b5e;
             flex-shrink: 0;
             box-shadow: 0 2px 8px rgba(184,59,94,0.15);
@@ -177,28 +177,19 @@
             flex: 1;
             display: flex;
             align-items: center;
-            gap: 0.2rem 0.3rem;
+            gap: 0 0.2rem;
             font-size: 1.15rem;
             line-height: 1.5;
-            flex-wrap: wrap; /* 默认允许换行，移动端通过媒体覆盖 */
+            flex-wrap: wrap;
         }
-        /* 原始输入数字：纯黑色，无背景 */
         .input-number {
             font-weight: 600;
             color: #000000;
             white-space: nowrap;
         }
-        /* 补充数字：红色，带方括号，无背景 */
         .supplement {
             font-weight: 600;
             color: #b83b5e;
-            white-space: nowrap;
-        }
-        .sep {
-            color: #97abc2;
-            font-weight: 400;
-            margin: 0 0.1rem;
-            font-size: 1rem;
             white-space: nowrap;
         }
         .empty-message {
@@ -234,7 +225,6 @@
             text-align: center;
         }
 
-        /* 移动端优化：去除背景和padding，缩小字体以确保一行显示 */
         @media (max-width: 600px) {
             .input-area {
                 gap: 10px;
@@ -268,29 +258,27 @@
             }
             #submitBtn, #clearBtn {
                 height: 52px;
-                font-size: 1.05rem;
+                font-size: 1rem;
             }
             .index-circle {
-                width: 32px;
-                height: 32px;
-                font-size: 0.9rem;
+                width: 38px;
+                height: 38px;
+                font-size: 0.95rem;
                 border-width: 2px;
-                margin-right: 4px; /* 减少间隙 */
+                margin-right: 4px;
             }
             .numbers-row {
-                font-size: 0.875rem;  /* 缩小字体，保证最长行(1、【13】、【25】、【37】、【49】)能放下 */
-                gap: 0.1rem 0.2rem;
-                flex-wrap: nowrap;   /* 强制不换行 */
-                overflow-x: hidden;   /* 隐藏滚动条，但内容必须刚好 */
+                font-size: 1rem;
+                gap: 0 0.1rem;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
                 white-space: nowrap;
                 width: 100%;
             }
-            /* 为了确保不溢出，父容器控制宽度，并通过flex子项收缩 */
-            .numbers-row > span, .numbers-row > .sep {
-                flex-shrink: 0;       /* 不允许压缩，保持原大小 */
-            }
-            .sep {
-                font-size: 0.8rem;
+            .numbers-row > span {
+                flex-shrink: 0;
+                font-size: 1rem;
             }
             .result-header h3 {
                 font-size: 1.2rem;
@@ -302,32 +290,23 @@
         }
 
         @media (max-width: 375px) {
-            .numbers-row {
-                font-size: 0.875rem;   /* 进一步缩小，适配更窄屏幕 */
-            }
-            .sep {
-                font-size: 0.875rem;
-            }
             .index-circle {
-                width: 30px;
-                height: 30px;
+                width: 34px;
+                height: 34px;
                 font-size: 0.85rem;
-            }
-        }
-
-        @media (max-width: 320px) {
-            .numbers-row {
-                font-size: 0.875rem;
             }
         }
     </style>
 </head>
 <body>
     <div class="card">
-        <h1>🔗 十二关联 · 一键清空</h1>
+        <h1>🔗 十二生肖 · 数字关联</h1>
         <div class="sub">
             <strong>规则：</strong> 每个数字可 ±12 寻找同伴（范围1～49）。<br>
-            自动识别逗号、顿号、短横线、空格等分隔符。红色【】为自动补全。
+            自动识别逗号、顿号、短横线、空格等分隔符。<br>
+            <strong>样式：</strong> 所有数字用【】包裹，黑色为原始输入，红色为自动补全。<br>
+            <strong>排序：</strong> 原始输入数字多的行排在前面。<br>
+            <strong>生肖：</strong> 圆圈内显示该组对应的生肖。
         </div>
 
         <div class="input-area">
@@ -338,15 +317,15 @@
 
         <div class="result-header">
             <h3>📋 分组结果</h3>
-            <span class="hint-badge">无背景 · 纯色区分</span>
+            <span class="hint-badge">生肖圆圈 · 全括号</span>
         </div>
         <div id="resultContainer" class="result-list">
             <!-- 动态生成行 -->
         </div>
         <div class="example-note">
-            ⚡ 示例中 <code>23-6,2、31 10 9 41 1 20</code> 将自动解析并补全（第5组含1和49）。
+            ⚡ 示例中 <code>23-6,2、31 10 9 41 1 20</code> 将自动解析并补全，按输入数量排序。
         </div>
-        <footer>加减12链条 · 移动端无滚动条</footer>
+        <footer>加减12链条 · 移动端1rem · 生肖圆圈</footer>
     </div>
 
     <script>
@@ -355,6 +334,22 @@
             const submitBtn = document.getElementById('submitBtn');
             const clearBtn = document.getElementById('clearBtn');
             const resultDiv = document.getElementById('resultContainer');
+
+            // 生肖映射表：base (1-12) -> 生肖名称
+            const zodiacMap = {
+                1: '马',
+                2: '蛇',
+                3: '龙',
+                4: '兔',
+                5: '虎',
+                6: '牛',
+                7: '鼠',
+                8: '猪',
+                9: '狗',
+                10: '鸡',
+                11: '猴',
+                12: '羊'
+            };
 
             function buildGroups(inputStr) {
                 const rawMatches = inputStr.match(/\d+/g);
@@ -405,6 +400,13 @@
                 const rawInput = inputField.value.trim();
                 const { groups, inputSet } = buildGroups(rawInput);
 
+                // 排序：按原始输入数字数量降序
+                groups.sort((a, b) => {
+                    const countA = a.numbers.filter(num => inputSet.has(num)).length;
+                    const countB = b.numbers.filter(num => inputSet.has(num)).length;
+                    return countB - countA;
+                });
+
                 resultDiv.innerHTML = '';
 
                 if (groups.length === 0) {
@@ -415,36 +417,37 @@
                     return;
                 }
 
-                groups.forEach((group, idx) => {
+                groups.forEach((group) => {
                     const row = document.createElement('div');
                     row.className = 'row';
 
+                    // 根据base获取生肖名称
+                    const zodiacName = zodiacMap[group.base] || group.base; // 容错，但应该都有
+
                     const circle = document.createElement('span');
                     circle.className = 'index-circle';
-                    circle.textContent = idx + 1;
+                    circle.textContent = zodiacName;
                     row.appendChild(circle);
 
                     const numbersSpan = document.createElement('span');
                     numbersSpan.className = 'numbers-row';
 
-                    const numberSpans = [];
+                    // 构建带括号的数字，不加顿号
                     group.numbers.forEach((num) => {
                         if (inputSet.has(num)) {
+                            // 原始输入：黑色【数字】
                             const span = document.createElement('span');
                             span.className = 'input-number';
                             span.textContent = `【${num}】`;
-                            numberSpans.push(span);
+                            numbersSpan.appendChild(span);
                         } else {
+                            // 补充：红色【数字】
                             const span = document.createElement('span');
                             span.className = 'supplement';
                             span.textContent = `【${num}】`;
-                            numberSpans.push(span);
+                            numbersSpan.appendChild(span);
                         }
                     });
-
-                    for (let i = 0; i < numberSpans.length; i++) {
-                        numbersSpan.appendChild(numberSpans[i]);
-                    }
 
                     row.appendChild(numbersSpan);
                     resultDiv.appendChild(row);
@@ -472,6 +475,3 @@
     </script>
 </body>
 </html>
-
-
-
