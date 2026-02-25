@@ -303,7 +303,7 @@
 
         @media (max-width: 375px) {
             .numbers-row {
-                font-size: 0.75rem;   /* 进一步缩小，适配更窄屏幕 */
+                font-size: 1rem;   /* 进一步缩小，适配更窄屏幕 */
             }
             .sep {
                 font-size: 0.75rem;
@@ -444,10 +444,6 @@
 
                     for (let i = 0; i < numberSpans.length; i++) {
                         numbersSpan.appendChild(numberSpans[i]);
-                        if (i < numberSpans.length - 1) {
-                            const sep = document.createTextNode('、');
-                            numbersSpan.appendChild(sep);
-                        }
                     }
 
                     row.appendChild(numbersSpan);
@@ -476,3 +472,4 @@
     </script>
 </body>
 </html>
+
