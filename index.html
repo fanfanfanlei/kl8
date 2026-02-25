@@ -303,7 +303,7 @@
 
         @media (max-width: 375px) {
             .numbers-row {
-                font-size: 1rem;   /* 进一步缩小，适配更窄屏幕 */
+                font-size: 0.875rem;   /* 进一步缩小，适配更窄屏幕 */
             }
             .sep {
                 font-size: 0.75rem;
@@ -432,7 +432,7 @@
                         if (inputSet.has(num)) {
                             const span = document.createElement('span');
                             span.className = 'input-number';
-                            span.textContent = num;
+                            span.textContent = `【${num}】`;
                             numberSpans.push(span);
                         } else {
                             const span = document.createElement('span');
@@ -472,4 +472,5 @@
     </script>
 </body>
 </html>
+
 
