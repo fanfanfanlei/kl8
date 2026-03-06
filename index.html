@@ -218,6 +218,51 @@
             color: #132a3b;
             font-weight: 500;
         }
+        .zodiac-table {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 5px;
+            margin-top: 20px;
+            margin-bottom: 1.8rem;
+        }
+        .zodiac-cell {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #f8fafd;
+            border: 1px solid #e0e8f0;
+            border-radius: 10px;
+            padding: 6px 2px;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.15s, border-color 0.15s, transform 0.1s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .zodiac-cell:active {
+            transform: scale(0.93);
+        }
+        .zodiac-cell.selected {
+            background: #b83b5e;
+            border-color: #9f2d4f;
+        }
+        .zodiac-cell.selected .z-num {
+            color: #fff;
+        }
+        .zodiac-cell.selected .z-name {
+            color: #ffd6e0;
+        }
+        .z-num {
+            font-weight: 700;
+            color: #162b3a;
+            font-size: 0.9rem;
+            line-height: 1.3;
+        }
+        .z-name {
+            color: #b83b5e;
+            font-size: 0.78rem;
+            font-weight: 600;
+            line-height: 1.3;
+        }
         footer {
             margin-top: 1.5rem;
             font-size: 0.85rem;
@@ -240,6 +285,9 @@
         }
 
         @media (max-width: 500px) {
+            .zodiac-table {
+                grid-template-columns: repeat(5, 1fr);
+            }
             .card {
                 padding: 1.3rem 1rem 1.8rem;
                 border-radius: 28px;
@@ -301,12 +349,56 @@
 <body>
     <div class="card">
         <h1>🔗 十二生肖 · 数字关联</h1>
-        <div class="sub">
-            <strong>规则：</strong> 每个数字可 ±12 寻找同伴（范围1～49）。<br>
-            自动识别逗号、顿号、短横线、空格等分隔符。<br>
-            <strong>样式：</strong> 所有数字用【】包裹，黑色为原始输入，红色为自动补全。<br>
-            <strong>排序：</strong> 原始输入数字多的行排在前面。<br>
-            <strong>生肖：</strong> 圆圈内显示该组对应的生肖。
+        <div class="zodiac-table">
+            <div class="zodiac-cell"><span class="z-num">1</span><span class="z-name">马</span></div>
+            <div class="zodiac-cell"><span class="z-num">2</span><span class="z-name">蛇</span></div>
+            <div class="zodiac-cell"><span class="z-num">3</span><span class="z-name">龙</span></div>
+            <div class="zodiac-cell"><span class="z-num">4</span><span class="z-name">兔</span></div>
+            <div class="zodiac-cell"><span class="z-num">5</span><span class="z-name">虎</span></div>
+            <div class="zodiac-cell"><span class="z-num">6</span><span class="z-name">牛</span></div>
+            <div class="zodiac-cell"><span class="z-num">7</span><span class="z-name">鼠</span></div>
+            <div class="zodiac-cell"><span class="z-num">8</span><span class="z-name">猪</span></div>
+            <div class="zodiac-cell"><span class="z-num">9</span><span class="z-name">狗</span></div>
+            <div class="zodiac-cell"><span class="z-num">10</span><span class="z-name">鸡</span></div>
+            <div class="zodiac-cell"><span class="z-num">11</span><span class="z-name">猴</span></div>
+            <div class="zodiac-cell"><span class="z-num">12</span><span class="z-name">羊</span></div>
+            <div class="zodiac-cell"><span class="z-num">13</span><span class="z-name">马</span></div>
+            <div class="zodiac-cell"><span class="z-num">14</span><span class="z-name">蛇</span></div>
+            <div class="zodiac-cell"><span class="z-num">15</span><span class="z-name">龙</span></div>
+            <div class="zodiac-cell"><span class="z-num">16</span><span class="z-name">兔</span></div>
+            <div class="zodiac-cell"><span class="z-num">17</span><span class="z-name">虎</span></div>
+            <div class="zodiac-cell"><span class="z-num">18</span><span class="z-name">牛</span></div>
+            <div class="zodiac-cell"><span class="z-num">19</span><span class="z-name">鼠</span></div>
+            <div class="zodiac-cell"><span class="z-num">20</span><span class="z-name">猪</span></div>
+            <div class="zodiac-cell"><span class="z-num">21</span><span class="z-name">狗</span></div>
+            <div class="zodiac-cell"><span class="z-num">22</span><span class="z-name">鸡</span></div>
+            <div class="zodiac-cell"><span class="z-num">23</span><span class="z-name">猴</span></div>
+            <div class="zodiac-cell"><span class="z-num">24</span><span class="z-name">羊</span></div>
+            <div class="zodiac-cell"><span class="z-num">25</span><span class="z-name">马</span></div>
+            <div class="zodiac-cell"><span class="z-num">26</span><span class="z-name">蛇</span></div>
+            <div class="zodiac-cell"><span class="z-num">27</span><span class="z-name">龙</span></div>
+            <div class="zodiac-cell"><span class="z-num">28</span><span class="z-name">兔</span></div>
+            <div class="zodiac-cell"><span class="z-num">29</span><span class="z-name">虎</span></div>
+            <div class="zodiac-cell"><span class="z-num">30</span><span class="z-name">牛</span></div>
+            <div class="zodiac-cell"><span class="z-num">31</span><span class="z-name">鼠</span></div>
+            <div class="zodiac-cell"><span class="z-num">32</span><span class="z-name">猪</span></div>
+            <div class="zodiac-cell"><span class="z-num">33</span><span class="z-name">狗</span></div>
+            <div class="zodiac-cell"><span class="z-num">34</span><span class="z-name">鸡</span></div>
+            <div class="zodiac-cell"><span class="z-num">35</span><span class="z-name">猴</span></div>
+            <div class="zodiac-cell"><span class="z-num">36</span><span class="z-name">羊</span></div>
+            <div class="zodiac-cell"><span class="z-num">37</span><span class="z-name">马</span></div>
+            <div class="zodiac-cell"><span class="z-num">38</span><span class="z-name">蛇</span></div>
+            <div class="zodiac-cell"><span class="z-num">39</span><span class="z-name">龙</span></div>
+            <div class="zodiac-cell"><span class="z-num">40</span><span class="z-name">兔</span></div>
+            <div class="zodiac-cell"><span class="z-num">41</span><span class="z-name">虎</span></div>
+            <div class="zodiac-cell"><span class="z-num">42</span><span class="z-name">牛</span></div>
+            <div class="zodiac-cell"><span class="z-num">43</span><span class="z-name">鼠</span></div>
+            <div class="zodiac-cell"><span class="z-num">44</span><span class="z-name">猪</span></div>
+            <div class="zodiac-cell"><span class="z-num">45</span><span class="z-name">狗</span></div>
+            <div class="zodiac-cell"><span class="z-num">46</span><span class="z-name">鸡</span></div>
+            <div class="zodiac-cell"><span class="z-num">47</span><span class="z-name">猴</span></div>
+            <div class="zodiac-cell"><span class="z-num">48</span><span class="z-name">羊</span></div>
+            <div class="zodiac-cell"><span class="z-num">49</span><span class="z-name">马</span></div>
         </div>
 
         <div class="input-area">
@@ -322,9 +414,7 @@
         <div id="resultContainer" class="result-list">
             <!-- 动态生成行 -->
         </div>
-        <div class="example-note">
-            ⚡ 示例中 <code>23-6,2、31 10 9 41 1 20</code> 将自动解析并补全，按输入数量排序。
-        </div>
+        <div class="example-note"></div>
         <footer>加减12链条 · 移动端1rem · 生肖圆圈</footer>
     </div>
 
@@ -466,6 +556,13 @@
                     e.preventDefault();
                     render();
                 }
+            });
+
+            // 生肖表格点击选中/取消
+            document.querySelectorAll('.zodiac-cell').forEach(cell => {
+                cell.addEventListener('click', () => {
+                    cell.classList.toggle('selected');
+                });
             });
 
             window.addEventListener('load', () => {
