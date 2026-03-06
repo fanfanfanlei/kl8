@@ -218,6 +218,28 @@
             color: #132a3b;
             font-weight: 500;
         }
+        .animous-table {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            margin: 20px 0;
+        }
+        .animous-table .zodiac-cell {
+            padding: 10px 4px;
+            background: #eef2ff;
+            border: 1.5px solid #b0c4e8;
+        }
+        .animous-table .zodiac-cell .z-name {
+            font-size: 1.15rem;
+            color: #2d4059;
+        }
+        .animous-table .zodiac-cell.selected {
+            background: #b83b5e;
+            border-color: #9f2d4f;
+        }
+        .animous-table .zodiac-cell.selected .z-name {
+            color: #fff;
+        }
         .zodiac-table {
             display: grid;
             grid-template-columns: repeat(10, 1fr);
@@ -349,6 +371,20 @@
 <body>
     <div class="card">
         <h1>🔗 十二生肖 · 数字关联</h1>
+        <div class="animous-table">
+            <div class="zodiac-cell"><span class="z-name">马</span></div>
+            <div class="zodiac-cell"><span class="z-name">蛇</span></div>
+            <div class="zodiac-cell"><span class="z-name">龙</span></div>
+            <div class="zodiac-cell"><span class="z-name">兔</span></div>
+            <div class="zodiac-cell"><span class="z-name">虎</span></div>
+            <div class="zodiac-cell"><span class="z-name">牛</span></div>
+            <div class="zodiac-cell"><span class="z-name">鼠</span></div>
+            <div class="zodiac-cell"><span class="z-name">猪</span></div>
+            <div class="zodiac-cell"><span class="z-name">狗</span></div>
+            <div class="zodiac-cell"><span class="z-name">鸡</span></div>
+            <div class="zodiac-cell"><span class="z-name">猴</span></div>
+            <div class="zodiac-cell"><span class="z-name">羊</span></div>
+        </div>
         <div class="zodiac-table">
             <div class="zodiac-cell"><span class="z-num">1</span><span class="z-name">马</span></div>
             <div class="zodiac-cell"><span class="z-num">2</span><span class="z-name">蛇</span></div>
